@@ -9,7 +9,7 @@
 # @raycast.icon 💵
 # @raycast.argument1 { "type": "text", "placeholder": "From Currency" }
 # @raycast.argument2 { "type": "text", "placeholder": "To Currency" }
-# @raycast.packageName Check currency exchange rates from Google
+# @raycast.packageName Check currency exchange rates (FX) from Google
 
 # Documentation:
 # @raycast.description Check currency exchange rates
