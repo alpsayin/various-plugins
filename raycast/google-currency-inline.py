@@ -8,7 +8,7 @@
 # Optional parameters:
 # @raycast.icon 💵
 # @raycast.refreshTime 1m
-# @raycast.packageName Inline Currency
+# @raycast.packageName Inline Currency Exchange Rate (FX)
 
 # Documentation:
 # @raycast.description Check currency exchange rates from Google. Set the name of this file such that a currency pair is found between 1st dot and 2nd dot in the filename. Examples: google-currency-inline.usdgbp.py, google-currency-inline.usdcad.py
