@@ -23,6 +23,19 @@ import traceback
 from datetime import datetime
 from pprint import pprint
 
+fuzzywuzzy_installed = False
+levenshtein_installed = False
+try:
+    from fuzzywuzzy import process, fuzz
+    fuzzywuzzy_installed = True
+except Exception as exc:
+    print('Optional: Install fuzzywuzzy package for fuzzy search')
+
+try:
+    import Levenshtein as levenshtein
+    levenshtein_installed = True
+except Exception as exc:
+    print('Optional: install python-Levenshtein package for faster fuzzy search')
 
 # Google uses these as keys for its currency api
 currency_keys = {
@@ -43,6 +56,7 @@ currency_keys = {
     "belize dollar": "/m/02bwg4",
     "bermudan dollar": "/m/04xb8t",
     "bhutan currency": "/m/02gt45",
+    "bhutanese ngultrum": "/m/02gt45",
     "bolivian boliviano": "/m/04tkg7",
     "bosnia-herzegovina convertible mark": "/m/02lnq3",
     "botswanan pula": "/m/02nksv",
@@ -53,6 +67,7 @@ currency_keys = {
     "cfp franc": "/m/01qyjx",
     "cambodian riel": "/m/03_m0v",
     "canadian dollar": "/m/0ptk_",
+    "canada dollar": "/m/0ptk_",
     "cape verdean escudo": "/m/06plyy",
     "cayman islands dollar": "/m/04xbgl",
     "central african cfa franc": "/m/025sw2b",
@@ -68,6 +83,7 @@ currency_keys = {
     "cuban peso": "/m/049p2z",
     "czech koruna": "/m/04rpc3",
     "danish krone": "/m/01j9nc",
+    "denmark krone": "/m/01j9nc",
     "djiboutian franc": "/m/05yxn7",
     "dominican peso": "/m/04lt7_",
     "east caribbean dollar": "/m/02r4k",
@@ -116,6 +132,7 @@ currency_keys = {
     "moroccan dirham": "/m/06qsj1",
     "mozambican metical": "/m/05yxqw",
     "myanmar kyat": "/m/04r7gc",
+    "burmese kyat": "/m/04r7gc",
     "namibian dollar": "/m/01y8jz",
     "nepalese rupee": "/m/02f4f4",
     "netherlands antillean guilder": "/m/08njbf",
@@ -124,14 +141,19 @@ currency_keys = {
     "nicaraguan córdoba": "/m/02fvtk",
     "nigerian naira": "/m/018cg3",
     "norwegian krone": "/m/0h5dw",
+    "norway krone": "/m/0h5dw",
     "omani rial": "/m/04_66x",
     "pakistani rupee": "/m/02svsf",
     "panamanian balboa": "/m/0200cp",
     "papua new guinean kina": "/m/04xblj",
     "paraguayan guarani": "/m/04w7dd",
     "philippine peso": "/m/01h5bw",
-    "poland złoty": "/m/0glfp",
+    "poland zloty": "/m/0glfp",
+    "polish zloty": "/m/0glfp",
     "pound sterling": "/m/01nv4h",
+    "great britain pound": "/m/01nv4h",
+    "british pound": "/m/01nv4h",
+    "united kingdom pound": "/m/01nv4h",
     "qatari rial": "/m/05lf7w",
     "romanian leu": "/m/02zsyq",
     "russian ruble": "/m/01hy_q",
@@ -153,6 +175,7 @@ currency_keys = {
     "surinamese dollar": "/m/02dl9v",
     "swazi lilangeni": "/m/02pmxj",
     "swedish krona": "/m/0485n",
+    "sweden krona": "/m/0485n",
     "swiss franc": "/m/01_h4b",
     "tajikistani somoni": "/m/0370bp",
     "tanzanian shilling": "/m/04s1qh",
@@ -161,6 +184,8 @@ currency_keys = {
     "trinidad &amp; tobago dollar": "/m/04xcgz",
     "tunisian dinar": "/m/04z4ml",
     "turkish lira": "/m/04dq0w",
+    "turkey lira": "/m/04dq0w",
+    "tl": "/m/04dq0w",
     "turkmenistani manat": "/m/0425kx",
     "ugandan shilling": "/m/04b6vh",
     "ukrainian hryvnia": "/m/035qkb",
@@ -233,7 +258,6 @@ currency_codes = {
     'gmd': 'gambian dalasi',
     'gel': 'georgian lari',
     'ghs': 'ghanaian cedi',
-    'gip': 'gibraltar pound',
     'gtq': 'guatemalan quetzal',
     'ggp': 'guernsey pound',
     'gnf': 'guinean franc',
@@ -268,12 +292,10 @@ currency_codes = {
     'mwk': 'malawian kwacha',
     'myr': 'malaysian ringgit',
     'mvr': 'maldivian rufiyaa',
-    'imp': 'manx pound',
     'mru': 'mauritanian ouguiya',
     'mur': 'mauritian rupee',
     'mxn': 'mexican peso',
     'mdl': 'moldovan leu',
-    'mnt': 'mongolian tögrög',
     'mad': 'moroccan dirham',
     'mzn': 'mozambican metical',
     'nad': 'namibian dollar',
@@ -292,17 +314,12 @@ currency_codes = {
     'pyg': 'paraguayan guaraní',
     'pen': 'peruvian sol',
     'php': 'philippine peso',
-    'pnd': 'pitcairn islands dollar',
-    'pln': 'polish złoty',
+    'pln': 'poland zloty',
     'qar': 'qatari riyal',
     'cny': 'renminbi/chinese yuan',
     'ron': 'romanian leu',
-    'zwb': 'rtgs dollar',
     'rub': 'russian ruble',
     'rwf': 'rwandan franc',
-    'shp': 'saint helena pound',
-    'wst': 'samoan tālā',
-    'stn': 'são tomé and príncipe dobra',
     'sar': 'saudi riyal',
     'rsd': 'serbian dinar',
     'scr': 'seychellois rupee',
@@ -335,22 +352,15 @@ currency_codes = {
     'uah': 'ukrainian hryvnia',
     'aed': 'united arab emirates dirham',
     'usd': 'united states dollar',
+    'us dollar': 'united states dollar',
+    'dollar': 'united states dollar',
     'uyu': 'uruguayan peso',
     'uzs': 'uzbekistani som',
-    'vuv': 'vanuatu vatu',
-    'ved': 'venezuelan bolívar digital',
-    'ves': 'venezuelan bolívar soberano',
-    'vnd': 'vietnamese đồng',
+    'vnd': 'vietnamese đong',
     'xof': 'west african cfa franc',
     'yer': 'yemeni rial',
     'zmw': 'zambian kwacha',
 }
-
-# Only 1 currency pair is supported for now
-# Duplicate the script if more pairs are needed
-currency_from = sys.argv[1].strip()
-currency_to = sys.argv[2].strip()
-
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:99.0) Gecko/20100101 Firefox/99.0',
@@ -367,10 +377,19 @@ headers = {
     'Sec-GPC': '1',
 }
 
-url = f'https://www.google.com/async/currency_v2_update?yv=3&async=source_amount%3A1%2Csource_currency%3A{currency_keys[currency_codes[currency_from.lower()]]}%2Ctarget_currency%3A{currency_keys[currency_codes[currency_to.lower()]]}%2Clang%3Aen%2Ccountry%3Atr%2Cdisclaimer_url%3Ahttps%3A%2F%2Fwww.google.com%2Fintl%2Fen%2Fgooglefinance%2Fdisclaimer%2F%2Cperiod%3A1M%2Cinterval%3A86400%2C_id%3Acurrency-v2-updatable_2%2C_pms%3As%2C_fmt%3Apc'
 
 
-def main():
+def main(currency_from, currency_to):
+    if currency_from.lower() in currency_codes:
+        currency_code_from = currency_codes[currency_from.lower()]
+    elif fuzzywuzzy_installed:
+
+        currency_code_from = process.extractOne(currency_from.lower(), currency_keys.keys())[0]
+    if currency_to.lower() in currency_codes:
+        currency_code_to = currency_codes[currency_to.lower()]
+    elif fuzzywuzzy_installed:
+        currency_code_to = process.extractOne(currency_to.lower(), currency_keys.keys())[0]
+    url = f'https://www.google.com/async/currency_v2_update?yv=3&async=source_amount%3A1%2Csource_currency%3A{currency_keys[currency_code_from]}%2Ctarget_currency%3A{currency_keys[currency_code_to]}%2Clang%3Aen%2Ccountry%3Atr%2Cdisclaimer_url%3Ahttps%3A%2F%2Fwww.google.com%2Fintl%2Fen%2Fgooglefinance%2Fdisclaimer%2F%2Cperiod%3A1M%2Cinterval%3A86400%2C_id%3Acurrency-v2-updatable_2%2C_pms%3As%2C_fmt%3Apc'
     result = requests.get(url, headers=headers)
     if result.status_code != 200:
         print(f'HTTP {result.status_code}')
@@ -414,10 +433,40 @@ def main():
         traceback.print_exc()
         return
 
-    end_char = ' '
-    print(f'{result:.4f}', end=end_char)
+    end_char = '                                        '
+    print(f'{currency_from.upper()}→{currency_to.upper()} {result:.4f}', end=end_char)
     print(f'@ {new_timestamp_str}', end=end_char)
 
+def fuzz_args():
+    currency_from = sys.argv[1].strip()
+    currency_to = sys.argv[2].strip()
+    if fuzzywuzzy_installed:
+        search_set = list(currency_codes.keys())
+        currency_from_codes_match = process.extractOne(currency_from, currency_codes.keys(), scorer=fuzz.ratio)
+        currency_to_codes_match = process.extractOne(currency_to, currency_codes.keys(), scorer=fuzz.ratio)
+        currency_from_keys_match = process.extractOne(currency_from, currency_keys.keys())
+        currency_to_keys_match = process.extractOne(currency_to, currency_keys.keys())
+        # print(currency_from_codes_match)
+        # print(currency_to_codes_match)
+        # print(currency_from_keys_match)
+        # print(currency_to_keys_match)
+        if currency_to_keys_match[1] > currency_to_codes_match[1]:
+            currency_to = currency_to_keys_match
+        else:
+            currency_to = currency_to_codes_match
+        if currency_from_keys_match[1] > currency_from_codes_match[1]:
+            currency_from = currency_from_keys_match
+        else:
+            currency_from = currency_from_codes_match
+    
+    # print(currency_from)
+    # print(currency_to)
+    currency_from = currency_from[0]
+    currency_to = currency_to[0]
+
+    return currency_from, currency_to
 
 if __name__ == '__main__':
-    main()
+    currency_from, currency_to = fuzz_args()
+    main(currency_from, currency_to)
+
