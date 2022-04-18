@@ -11,7 +11,7 @@
 # @raycast.packageName Inline Currency Exchange Rate (FX)
 
 # Documentation:
-# @raycast.description Check currency exchange rates from Google. Set the name of this file such that a currency pair is found between 1st dot and 2nd dot in the filename. Examples: google-currency-inline.usdgbp.py, google-currency-inline.usdcad.py
+# @raycast.description Check currency exchange rates from Google. Set the name of this file such that a currency pair is found between 1st dot and 2nd dot in the filename. Examples: google-currency-inline.usdgbp.py, google-currency-inline.usdcad.py. A useful way to use this script is to create symbolic links rather than to copy.
 # @raycast.author Alp Sayin
 # @raycast.authorURL https://github.com/alpsayin
 
