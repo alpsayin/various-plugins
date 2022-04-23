@@ -7,8 +7,9 @@
 
 # Optional parameters:
 # @raycast.icon 💵
-# @raycast.argument1 { "type": "text", "placeholder": "From Currency" }
-# @raycast.argument2 { "type": "text", "placeholder": "To Currency" }
+# @raycast.argument1 { "type": "text", "placeholder": "Amount (optional)", "optional": true }
+# @raycast.argument2 { "type": "text", "placeholder": "From Currency" }
+# @raycast.argument3 { "type": "text", "placeholder": "To Currency" }
 # @raycast.packageName Check currency exchange rates (FX) from Google
 
 # Documentation:
@@ -378,8 +379,7 @@ headers = {
 }
 
 
-
-def main(currency_from, currency_to):
+def main(amount, currency_from, currency_to):
     if currency_from.lower() in currency_codes:
         currency_code_from = currency_codes[currency_from.lower()]
     elif fuzzywuzzy_installed:
@@ -434,14 +434,23 @@ def main(currency_from, currency_to):
         return
 
     end_char = '                                        '
-    print(f'{currency_from.upper()}→{currency_to.upper()} {result:.4f}', end=end_char)
+    result = amount * result
+    if result < 10:
+        print(f'{amount} {currency_from.upper()}→{currency_to.upper()} {result:.4f}', end=end_char)
+    else:
+        print(f'{amount} {currency_from.upper()}→{currency_to.upper()} {result:.2f}', end=end_char)
     print(f'@ {new_timestamp_str}', end=end_char)
 
+
 def fuzz_args():
-    currency_from = sys.argv[1].strip()
-    currency_to = sys.argv[2].strip()
+    amount = 1
+    try:
+        amount = float(sys.argv[1].strip())
+    except:
+        pass
+    currency_from = sys.argv[2].strip()
+    currency_to = sys.argv[3].strip()
     if fuzzywuzzy_installed:
-        search_set = list(currency_codes.keys())
         currency_from_codes_match = process.extractOne(currency_from, currency_codes.keys(), scorer=fuzz.ratio)
         currency_to_codes_match = process.extractOne(currency_to, currency_codes.keys(), scorer=fuzz.ratio)
         currency_from_keys_match = process.extractOne(currency_from, currency_keys.keys())
@@ -464,9 +473,9 @@ def fuzz_args():
     currency_from = currency_from[0]
     currency_to = currency_to[0]
 
-    return currency_from, currency_to
+    return amount, currency_from, currency_to
+
 
 if __name__ == '__main__':
-    currency_from, currency_to = fuzz_args()
-    main(currency_from, currency_to)
-
+    amount, currency_from, currency_to = fuzz_args()
+    main(amount, currency_from, currency_to)
