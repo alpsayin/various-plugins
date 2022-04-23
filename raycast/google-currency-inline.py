@@ -437,13 +437,12 @@ def main(currency_from, currency_to):
         return
 
     end_char = '  '
-    print(f'{currency_from.upper()}→{currency_to.upper()}  {result:.4f}', end=end_char)
+    print(f'{currency_from.upper()}→{currency_to.upper()}  {result:.4f} = ⅟ {1/result:.4f}', end=end_char)
     print(f'@ {new_timestamp_str}', end=end_char)
 
 def fuzz_args():
     global currency_from, currency_to
     if fuzzywuzzy_installed:
-        search_set = list(currency_codes.keys())
         currency_from_codes_match = process.extractOne(currency_from, currency_codes.keys(), scorer=fuzz.ratio)
         currency_to_codes_match = process.extractOne(currency_to, currency_codes.keys(), scorer=fuzz.ratio)
         currency_from_keys_match = process.extractOne(currency_from, currency_keys.keys())
