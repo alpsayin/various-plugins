@@ -390,7 +390,15 @@ def main(amount, currency_from, currency_to):
     elif fuzzywuzzy_installed:
         currency_code_to = process.extractOne(currency_to.lower(), currency_keys.keys())[0]
     url = f'https://www.google.com/async/currency_v2_update?yv=3&async=source_amount%3A1%2Csource_currency%3A{currency_keys[currency_code_from]}%2Ctarget_currency%3A{currency_keys[currency_code_to]}%2Clang%3Aen%2Ccountry%3Atr%2Cdisclaimer_url%3Ahttps%3A%2F%2Fwww.google.com%2Fintl%2Fen%2Fgooglefinance%2Fdisclaimer%2F%2Cperiod%3A1M%2Cinterval%3A86400%2C_id%3Acurrency-v2-updatable_2%2C_pms%3As%2C_fmt%3Apc'
-    result = requests.get(url, headers=headers)
+
+    try:
+        result = requests.get(url, headers=headers)
+    except requests.exceptions.ConnectionError as ce:
+        print('ConnectionError!')
+        print('---')
+        pprint(ce)
+        return
+
     if result.status_code != 200:
         print(f'HTTP {result.status_code}')
         return
