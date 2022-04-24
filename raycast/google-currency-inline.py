@@ -23,8 +23,8 @@ from datetime import datetime
 from pprint import pprint
 
 invoke_path = sys.argv[0]
-currency_from = invoke_path[invoke_path.index('.')+1:invoke_path.rindex('.')][0:3]
-currency_to = invoke_path[invoke_path.index('.')+1:invoke_path.rindex('.')][3:6]
+currency_from = invoke_path[invoke_path.index('.') + 1:invoke_path.rindex('.')][0:3]
+currency_to = invoke_path[invoke_path.index('.') + 1:invoke_path.rindex('.')][3:6]
 
 fuzzywuzzy_installed = False
 levenshtein_installed = False
@@ -381,7 +381,6 @@ headers = {
 }
 
 
-
 def main(currency_from, currency_to):
     if currency_from.lower() in currency_codes:
         currency_code_from = currency_codes[currency_from.lower()]
@@ -440,6 +439,7 @@ def main(currency_from, currency_to):
     print(f'{currency_from.upper()}→{currency_to.upper()}  {result:.4f} = ⅟ {1/result:.4f}', end=end_char)
     print(f'@ {new_timestamp_str}', end=end_char)
 
+
 def fuzz_args():
     global currency_from, currency_to
     if fuzzywuzzy_installed:
@@ -459,13 +459,14 @@ def fuzz_args():
             currency_from = currency_from_keys_match
         else:
             currency_from = currency_from_codes_match
-    
+
     # print(currency_from)
     # print(currency_to)
     currency_from = currency_from[0]
     currency_to = currency_to[0]
 
     return currency_from, currency_to
+
 
 if __name__ == '__main__':
     currency_from, currency_to = fuzz_args()

@@ -467,7 +467,7 @@ def fuzz_args():
             currency_from = currency_from_keys_match
         else:
             currency_from = currency_from_codes_match
-    
+
     # print(currency_from)
     # print(currency_to)
     currency_from = currency_from[0]
