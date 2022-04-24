@@ -52,7 +52,14 @@ url = f'https://www.mastercard.us/settlement/currencyrate/conversion-rate?fxDate
 
 
 def main():
-    result = requests.get(url, headers=headers)
+    try:
+        result = requests.get(url, headers=headers)
+    except requests.exceptions.ConnectionError as ce:
+        print('ConnectionError!')
+        print('---')
+        pprint(ce)
+        return
+
     if result.status_code != 200:
         print(f'HTTP {result.status_code}')
         return

@@ -38,7 +38,14 @@ url = f'https://duckduckgo.com/js/spice/currency/1/{currency_from}/{currency_to}
 
 
 def main():
-    result = requests.get(url, headers=headers)
+    try:
+        result = requests.get(url, headers=headers)
+    except requests.exceptions.ConnectionError as ce:
+        print('ConnectionError!')
+        print('---')
+        pprint(ce)
+        return
+
     if result.status_code != 200:
         print(f'HTTP {result.status_code}')
         return

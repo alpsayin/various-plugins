@@ -360,7 +360,14 @@ url = f'https://www.google.com/async/currency_v2_update?yv=3&async=source_amount
 
 
 def main():
-    result = requests.get(url, headers=headers)
+    try:
+        result = requests.get(url, headers=headers)
+    except requests.Exceptions.ConnectionError as ce:
+        print('ConnectionError!')
+        print('---')
+        print(ce)
+        return
+
     if result.status_code != 200:
         print(f'HTTP {result.status_code}')
         return
