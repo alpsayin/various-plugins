@@ -2,15 +2,16 @@
 
 # Required parameters:
 # @raycast.schemaVersion 1
-# @raycast.title Currency Exchange Rates
+# @raycast.title Check currency exchange rates (FX) from Google
 # @raycast.mode compact
 
 # Optional parameters:
 # @raycast.icon 💵
+# @raycast.packageName Finance
+
 # @raycast.argument1 { "type": "text", "placeholder": "Amount (optional)", "optional": true }
 # @raycast.argument2 { "type": "text", "placeholder": "From Currency" }
 # @raycast.argument3 { "type": "text", "placeholder": "To Currency" }
-# @raycast.packageName Check currency exchange rates (FX) from Google
 
 # Documentation:
 # @raycast.description Check currency exchange rates
