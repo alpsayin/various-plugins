@@ -7,7 +7,7 @@
 
 # Optional parameters:
 # @raycast.icon 💵
-# @raycast.refreshTime 1m
+# @raycast.refreshTime 5m
 # @raycast.packageName Finance
 
 # Documentation:
