@@ -398,7 +398,13 @@ def main():
 
     try:
         result = float(data_value_str)
-        timestamp = datetime.strptime(timestamp_str, '%b %d, %H:%M %Z')  # Apr 18, 12:32 UTC
+        try:
+            timestamp = datetime.strptime(timestamp_str, '%b %d, %H:%M %Z')  # Apr 18, 12:32 UTC
+        except:
+            try:
+                timestamp = datetime.strptime(timestamp_str, '%d %b, %H:%M %Z')  # 6 May, 12:32 UTC
+            except Exception as exc:
+                raise exc        
         timestamp = timestamp.replace(year=datetime.now().year)
         timestamp = timestamp + (datetime.now() - datetime.utcnow())
         new_timestamp_str = timestamp.strftime('%d %b, %H:%M')
